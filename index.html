@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>療育施設マップ</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header>
+    <h1>難聴児療育施設MAP</h1>
+  </header>
+  
+  <div id="map"></div>
+
+  <footer>
+    <p>&copy; 2024 難聴児療育施設マップ</p>
+  </footer>
+
+  <script src="https://www.bing.com/api/maps/mapcontrol?key=ArnYuTTOitPVbPftcUX1lPNN5QVgrbiVqiaaxFs5qtzlj4NUKZ1BLmao-LDAXuOF"></script>
+
+  <script>
+    let map;
+
+    function initMap() {
+      map = new Microsoft.Maps.Map('#map', {
+        center: new Microsoft.Maps.Location(35.681236, 139.767125), // 東京の緯度経度
+        zoom: 10
+      });
+
+        // 療育施設の座標
+        const facilities = [
+        { name: 'きこえとコミュニケーションうさぎクラブ', location: new Microsoft.Maps.Location(35.730355047894136, 139.5113935047576), website: 'http://www.morohosi-jibika.jp/jibika/hokagoday-usagi/' }, 
+        { name: '東京都立大塚ろう学校永福分教室', location: new Microsoft.Maps.Location(35.684950056914374, 139.64356538573537), website:'http://www.otsuka-sd.metro.tokyo.jp/site/zen/' }, 
+        { name: '耳鼻咽喉科自由が丘杉内病院', location: new Microsoft.Maps.Location(35.6261039576595, 139.66879128521788),website:'http://sugiuchi.la.coocan.jp/'},
+        { name: 'ノーサイド教育センター', location: new Microsoft.Maps.Location(35.66842463304674, 139.64926155658625),website:'http://noside.org/m/' },
+        { name: '東京都立大塚ろう学校城南分教室', location: new Microsoft.Maps.Location(35.56390483429208, 139.71191943594607),website:'http://www.otsuka-sd.metro.tokyo.jp/site/zen/' },
+        { name: '東京都立大塚ろう学校', location: new Microsoft.Maps.Location(35.749036295539554, 139.73551785804264),website:'http://www.otsuka-sd.metro.tokyo.jp/site/zen/' },
+        { name: '児童発達支援事業所エント', location: new Microsoft.Maps.Location(35.87557210238521, 139.515311642329),website:'http://ent-intron.com/' },
+      ];
+
+      // ピンを立てる
+      facilities.forEach(facility => {
+        const facilityLocation = facility.location;
+        const pin = new Microsoft.Maps.Pushpin(facilityLocation, {
+          title: facility.name,
+          color: 'blue'
+        });
+        pin.metadata = { website: facility.website }; // ピンに関連付けられた情報を格納する
+        Microsoft.Maps.Events.addHandler(pin, 'click', (e) => {
+          window.open(e.target.metadata.website); // ピンがクリックされたときに関連付けられたURLを開く
+        });
+        map.entities.push(pin);
+      });
+
+
+      // ユーザーの位置情報を取得
+      navigator.geolocation.getCurrentPosition(position => {
+        const userLocation = new Microsoft.Maps.Location(position.coords.latitude, position.coords.longitude);
+        const userPin = new Microsoft.Maps.Pushpin(userLocation, {
+          icon: 'https://icons8.jp/icons/set/map', // ユーザーの位置を示すアイコンのURL
+          title: 'あなたの位置'
+        });
+        map.entities.push(userPin);
+      });
+    }
+
+
+    // initMap 関数を呼び出す
+    initMap();
+  </script>
+</body>
+</html>
